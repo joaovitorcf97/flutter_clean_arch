@@ -1,7 +1,7 @@
 const String habitsTableName = 'habits';
 const String habitsTableId = 'id';
 const String habitsTableTitle = 'title';
-const String habitsTableCreatedAt = 'createdAt';
+const String habitsTableCreatedAt = 'created_at';
 
 const String createHabitsTable =
     '''
