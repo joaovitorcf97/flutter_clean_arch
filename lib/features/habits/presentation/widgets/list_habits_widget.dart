@@ -4,15 +4,20 @@ import 'package:flutter_clean_arch/features/habits/presentation/widgets/habit_ca
 
 class ListHabitsWidget extends StatelessWidget {
   final List<Habit> habits;
+  final void Function() onDelete;
 
-  const ListHabitsWidget({super.key, required this.habits});
+  const ListHabitsWidget({
+    super.key,
+    required this.habits,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: habits.length,
       itemBuilder: (context, index) {
-        return HabitCardWidget(habit: habits[index]);
+        return HabitCardWidget(habit: habits[index], onDelete: onDelete);
       },
     );
   }

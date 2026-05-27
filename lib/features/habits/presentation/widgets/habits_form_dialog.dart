@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_arch/core/di/injector_container.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_cubit.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_state.dart';
 
 class HabitsFormDialog extends StatefulWidget {
   const HabitsFormDialog({super.key});
@@ -53,7 +55,17 @@ class _HabitsFormDialogState extends State<HabitsFormDialog> {
           },
           child: const Text('Cancel'),
         ),
-        TextButton(onPressed: _submit, child: const Text('Save')),
+        BlocBuilder<HabitCubit, HabitState>(
+          bloc: _habitCubit,
+          builder: (context, state) {
+            return TextButton(
+              onPressed: _submit,
+              child: state is HabitLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Save'),
+            );
+          },
+        ),
       ],
     );
   }

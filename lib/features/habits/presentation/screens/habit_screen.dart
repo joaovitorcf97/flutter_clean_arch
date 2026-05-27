@@ -41,7 +41,12 @@ class _HabitScreenState extends State<HabitScreen> {
               if (state.habits.isEmpty) {
                 return const EmptyHabitViewWidget();
               }
-              return ListHabitsWidget(habits: state.habits);
+              return ListHabitsWidget(
+                habits: state.habits,
+                onDelete: () {
+                  _habitCubit.getHabits();
+                },
+              );
             case HabitError():
               return ErrorHabitsViewWidget(message: state.message);
             default:
