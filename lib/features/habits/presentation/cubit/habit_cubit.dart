@@ -24,6 +24,8 @@ class HabitCubit extends Cubit<HabitState> {
     emit(const HabitLoading());
 
     try {
+      await Future.delayed(const Duration(seconds: 2));
+
       final habits = await _getHabitUseCase();
       emit(HabitLoaded(habits: habits));
     } catch (e) {

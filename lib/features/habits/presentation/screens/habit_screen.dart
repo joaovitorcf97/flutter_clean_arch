@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_arch/core/di/injector_container.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_cubit.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_state.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/empty_habit_view_widget.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/error_habits_view_widget.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/widgets/habits_form_dialog.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/widgets/list_habits_widget.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/loading_habits_view_widget.dart';
 
 class HabitScreen extends StatefulWidget {
   const HabitScreen({super.key});
@@ -33,22 +36,19 @@ class _HabitScreenState extends State<HabitScreen> {
         builder: (context, state) {
           switch (state) {
             case HabitInitial() || HabitLoading():
-              return const Center(child: CircularProgressIndicator());
+              return const LoadingHabitsViewWidget();
             case HabitLoaded():
+              if (state.habits.isEmpty) {
+                return const EmptyHabitViewWidget();
+              }
               return ListHabitsWidget(habits: state.habits);
             case HabitError():
-              return Center(child: Text(state.message));
+              return ErrorHabitsViewWidget(message: state.message);
             default:
               return const SizedBox.shrink();
           }
         },
-        listener: (context, state) {
-          if (state is HabitError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-          }
-        },
+        listener: (context, state) {},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
