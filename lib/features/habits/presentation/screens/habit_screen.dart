@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_arch/core/di/injector_container.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_cubit.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_state.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/habits_form_dialog.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/list_habits_widget.dart';
 
 class HabitScreen extends StatefulWidget {
   const HabitScreen({super.key});
@@ -33,12 +35,7 @@ class _HabitScreenState extends State<HabitScreen> {
             case HabitInitial() || HabitLoading():
               return const Center(child: CircularProgressIndicator());
             case HabitLoaded():
-              return ListView.builder(
-                itemCount: state.habits.length,
-                itemBuilder: (context, index) {
-                  return ListTile(title: Text(state.habits[index].title));
-                },
-              );
+              return ListHabitsWidget(habits: state.habits);
             case HabitError():
               return Center(child: Text(state.message));
             default:
@@ -54,7 +51,12 @@ class _HabitScreenState extends State<HabitScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => const HabitsFormDialog(),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
