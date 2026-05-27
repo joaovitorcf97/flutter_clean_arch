@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch/features/habits/domain/entities/habit.dart';
+import 'package:flutter_clean_arch/features/habits/presentation/widgets/habit_card_widget.dart';
 
 class ListHabitsWidget extends StatelessWidget {
   final List<Habit> habits;
@@ -11,7 +12,7 @@ class ListHabitsWidget extends StatelessWidget {
     return ListView.builder(
       itemCount: habits.length,
       itemBuilder: (context, index) {
-        return ListTile(title: Text(habits[index].title));
+        return HabitCardWidget(habit: habits[index]);
       },
     );
   }
