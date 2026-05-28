@@ -22,7 +22,7 @@ class _HabitScreenState extends State<HabitScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _habitCubit.getHabits();
     });
   }
@@ -33,27 +33,40 @@ class _HabitScreenState extends State<HabitScreen> {
       appBar: AppBar(title: const Text('Habits')),
       body: BlocConsumer<HabitCubit, HabitState>(
         bloc: _habitCubit,
-        builder: (context, state) {
-          switch (state) {
-            case HabitInitial() || HabitLoading():
-              return const LoadingHabitsViewWidget();
-            case HabitLoaded():
-              if (state.habits.isEmpty) {
-                return const EmptyHabitViewWidget();
-              }
-              return ListHabitsWidget(
-                habits: state.habits,
-                onDelete: () {
-                  _habitCubit.getHabits();
-                },
-              );
-            case HabitError():
-              return ErrorHabitsViewWidget(message: state.message);
-            default:
-              return const SizedBox.shrink();
-          }
+        listenWhen: (previous, current) =>
+            previous.actionErrorMessage != current.actionErrorMessage &&
+            current.actionErrorMessage != null,
+        listener: (context, state) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.actionErrorMessage!)),
+          );
         },
-        listener: (context, state) {},
+        builder: (context, state) {
+          if (state.showFullScreenLoading) {
+            return const LoadingHabitsViewWidget();
+          }
+
+          if (state.showFullScreenError) {
+            return ErrorHabitsViewWidget(message: state.errorMessage!);
+          }
+
+          if (state.habits.isEmpty) {
+            return const EmptyHabitViewWidget();
+          }
+
+          return Stack(
+            children: [
+              ListHabitsWidget(habits: state.habits),
+              if (state.isRefreshing)
+                const Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: LinearProgressIndicator(),
+                ),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

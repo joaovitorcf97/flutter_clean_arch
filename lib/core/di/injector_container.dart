@@ -6,7 +6,6 @@ import 'package:flutter_clean_arch/features/habits/domain/usecases/delete_habit_
 import 'package:flutter_clean_arch/features/habits/domain/usecases/get_habit_usecase.dart';
 import 'package:flutter_clean_arch/features/habits/domain/usecases/insert_habit_usecase.dart';
 import 'package:flutter_clean_arch/features/habits/domain/usecases/update_habit_usecase.dart';
-import 'package:flutter_clean_arch/features/habits/presentation/cubit/delete_habit_cubit.dart';
 import 'package:flutter_clean_arch/features/habits/presentation/cubit/habit_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -45,9 +44,5 @@ Future<void> initDependencies() async {
       sl<UpdateHabitUseCase>(),
       sl<DeleteHabitUseCase>(),
     ),
-  );
-
-  sl.registerLazySingleton<DeleteHabitCubit>(
-    () => DeleteHabitCubit(sl<DeleteHabitUseCase>()),
   );
 }

@@ -22,7 +22,10 @@ class _HabitsFormDialogState extends State<HabitsFormDialog> {
     final title = _titleController.text.trim();
     await _habitCubit.insertHabit(title);
 
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    if (_habitCubit.state.actionErrorMessage == null) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -39,7 +42,7 @@ class _HabitsFormDialogState extends State<HabitsFormDialog> {
         key: _formKey,
         child: TextFormField(
           controller: _titleController,
-          decoration: InputDecoration(hintText: 'Enter habit title'),
+          decoration: const InputDecoration(hintText: 'Enter habit title'),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Title is required';
@@ -50,18 +53,22 @@ class _HabitsFormDialogState extends State<HabitsFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
         BlocBuilder<HabitCubit, HabitState>(
           bloc: _habitCubit,
+          buildWhen: (previous, current) =>
+              previous.isSaving != current.isSaving,
           builder: (context, state) {
             return TextButton(
-              onPressed: _submit,
-              child: state is HabitLoading
-                  ? const CircularProgressIndicator()
+              onPressed: state.isSaving ? null : _submit,
+              child: state.isSaving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Text('Save'),
             );
           },
